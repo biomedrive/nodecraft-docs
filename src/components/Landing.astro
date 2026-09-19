@@ -1,0 +1,913 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import Showcase from './Showcase.astro';
+import { getImage } from 'astro:assets';
+import { existsSync } from 'node:fs';
+import posterSrc from '../assets/showcase/01-nodecraft.webp';
+import RoutingDiagrams from './RoutingDiagrams.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const to = (path: string) => `${base}${path}`;
+const FAB = 'https://www.fab.com/sellers/BiomeDrive';
+const DISCORD = 'https://discord.gg/FEvBNh3Xd9';
+
+// Background video: public/video/nodecraft-showcase.mp4 (web copy of the
+// showcase edit). The overview screenshot is the poster and the fallback on
+// phones, data-saver and reduced-motion.
+const VIDEO_FILE = 'video/nodecraft-showcase.mp4';
+const hasVideo = existsSync(`public/${VIDEO_FILE}`);
+const videoUrl = to(`/${VIDEO_FILE}`);
+const poster = await getImage({ src: posterSrc, width: 1920, format: 'webp', quality: 80 });
+
+const features = [
+	{
+		icon: 'star',
+		title: 'Five hand-built themes',
+		text: 'Neon, Liquid Glass, Command, Aetherial and Atelier. Each one is a complete look, not a colour swap.',
+		href: '/guides/themes/',
+	},
+	{
+		icon: 'random',
+		title: 'Smart wire routing',
+		text: "Unreal's curves, clean 90° Manhattan or transit-map 45° Subway. Manhattan and Subway find their way around nodes.",
+		href: '/guides/wire-routing/',
+	},
+	{
+		icon: 'puzzle',
+		title: 'Shapes, pins and comments',
+		text: 'Custom node silhouettes, themed pin icons, and comment boxes and bubbles that match each theme.',
+		href: '/guides/themes/#comment-boxes',
+	},
+	{
+		icon: 'rocket',
+		title: 'Live backdrops',
+		text: "A real fluid simulation behind Neon, a drifting nebula behind Aetherial, paper grain behind Atelier.",
+		href: '/guides/themes/',
+	},
+	{
+		icon: 'setting',
+		title: 'Remembers your choice',
+		text: 'Theme, routing and wire spacing are saved per project the moment you pick them. No save prompts.',
+		href: '/getting-started/quick-start/#your-choices-are-remembered',
+	},
+	{
+		icon: 'approve-check',
+		title: 'Editor-only and safe',
+		text: 'Only changes how graphs are drawn. Your assets are never modified and nothing ships in your game.',
+		href: '/help/faq/#does-nodecraft-affect-my-packaged-game',
+	},
+] as const;
+
+const steps = [
+	{ title: 'Install from Fab', text: 'Add NodeCraft to Unreal Engine 5.6, 5.7 or 5.8 from your Fab library.' },
+	{ title: 'Enable the plugin', text: 'In your project, open Edit → Plugins, tick NodeCraft and restart.' },
+	{ title: 'Pick a look', text: 'Open any Blueprint or material and choose a theme from the NodeCraft toolbar dropdown.' },
+];
+---
+
+<div class="nc-landing not-content">
+	<!-- ── Hero: background video ───────────────────────────────────────── -->
+	<section class="hero">
+		<div class="hero-media" aria-hidden="true">
+			<img class="hero-poster" src={poster.src} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" />
+			{hasVideo && <video class="hero-video" data-src={videoUrl} muted loop playsinline preload="none" />}
+		</div>
+		<div class="hero-shade" aria-hidden="true"></div>
+
+		<div class="wrap hero-copy">
+			<p class="eyebrow"><span class="sq" aria-hidden="true"></span>Unreal Engine plugin · 5.6 · 5.7 · 5.8</p>
+			<h1>Make your graphs <span class="hl">beautiful</span>.</h1>
+			<p class="lede">
+				NodeCraft restyles Unreal's Blueprint and Material editors with five hand-built themes, clean wire
+				routing and animated backdrops. Switch the whole look from the toolbar in one click. No restart, and
+				nothing added to your game.
+			</p>
+			<div class="cta">
+				<a class="btn btn-primary" href={to('/getting-started/installation/')}>
+					Get started <Icon name="right-arrow" size="1.1em" />
+				</a>
+				<a class="btn btn-secondary" href={FAB} target="_blank" rel="noopener">
+					Get it on Fab <Icon name="external" size="1em" />
+				</a>
+				<a class="btn btn-ghost" href={DISCORD} target="_blank" rel="noopener">
+					<Icon name="discord" size="1.1em" /> Discord
+				</a>
+			</div>
+		</div>
+
+		<div class="hero-strip">
+			<div class="wrap strip-inner">
+				<ul class="strip-facts">
+					<li><strong>5</strong> hand-built themes</li>
+					<li><strong>Manhattan</strong> &amp; <strong>Subway</strong> routing</li>
+					<li>Blueprints &amp; Materials</li>
+					<li><strong>UE 5.6 – 5.8</strong></li>
+					<li>Editor-only</li>
+				</ul>
+				<a class="strip-link" href={to('/changelog/')}>What's new <Icon name="right-arrow" size="1em" /></a>
+				{
+					hasVideo && (
+						<button type="button" class="hero-toggle" data-hero-toggle aria-pressed="false" hidden>
+							<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" /></svg>
+							<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+							<span class="sr-only">Pause background video</span>
+						</button>
+					)
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Screenshots ──────────────────────────────────────────────────── -->
+	<section class="section section-shots">
+		<div class="wrap wrap-wide">
+			<p class="kicker">Screenshots</p>
+			<h2>Every theme, up close.</h2>
+			<div class="shots">
+				<Showcase />
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Features ─────────────────────────────────────────────────────── -->
+	<section class="section">
+		<div class="wrap">
+			<p class="kicker">What you get</p>
+			<h2>Everything that draws your graph, restyled.</h2>
+			<div class="features">
+				{
+					features.map((f) => (
+						<a class="feature" href={to(f.href)}>
+							<span class="f-icon">
+								<Icon name={f.icon} size="1.25rem" />
+							</span>
+							<h3>{f.title}</h3>
+							<p>{f.text}</p>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Routing ──────────────────────────────────────────────────────── -->
+	<section class="section section-band">
+		<div class="wrap">
+			<p class="kicker">Wire routing</p>
+			<h2>Three ways to draw a wire.</h2>
+			<p class="section-lede">
+				Each theme comes with the routing it was designed around. Pin a style you prefer and it stays through
+				every theme switch. Overlapping wires fan out into parallel lanes so every one stays visible.
+			</p>
+			<RoutingDiagrams />
+			<a class="more" href={to('/guides/wire-routing/')}>How routing works <Icon name="right-arrow" size="1em" /></a>
+		</div>
+	</section>
+
+	<!-- ── Customise ────────────────────────────────────────────────────── -->
+	<section class="section">
+		<div class="wrap split">
+			<div class="split-copy">
+				<p class="kicker">Make it yours</p>
+				<h2>Themes are data, not code.</h2>
+				<p class="section-lede">
+					Every colour, material, pin icon, font, node shape, wire style and backdrop lives in a theme asset
+					you edit right in the Unreal Editor. Changes show up in your open graphs straight away.
+				</p>
+				<ul class="ticks">
+					<li>Colour nodes by family: events, flow control, math, gameplay and more</li>
+					<li>Use your own materials for node bodies, title bars and backdrops</li>
+					<li>Add your own node silhouettes and pin icons</li>
+					<li>Share a customised look with your whole team through source control</li>
+				</ul>
+				<a class="more" href={to('/guides/customizing-themes/')}>Customize a theme <Icon name="right-arrow" size="1em" /></a>
+			</div>
+			<div class="details" aria-hidden="true">
+				<div class="d-head"><span class="d-tab">Details</span><span class="d-asset">DA_KismetNodeTheme</span></div>
+				<div class="d-search">Search</div>
+				<div class="d-cat">▾ Active</div>
+				<div class="d-row"><span>Active Theme</span><span class="d-combo">Command ▾</span></div>
+				<div class="d-cat">▾ Themes <em>6 Map elements</em></div>
+				<div class="d-row d-sub"><span>▾ Neon</span><span></span></div>
+				<div class="d-cat d-cat-2">Nodes</div>
+				<div class="d-row d-sub2"><span>Body Shape</span><span class="d-combo">Default ▾</span></div>
+				<div class="d-row d-sub2"><span>Border Glow</span><span class="d-check is-on"></span></div>
+				<div class="d-cat d-cat-2">Routing</div>
+				<div class="d-row d-sub2"><span>Spline Theme</span><span class="d-combo">Subway (45/90) ▾</span></div>
+				<div class="d-row d-sub2"><span>Wire Thickness (x)</span><span class="d-num">0.75</span></div>
+				<div class="d-row d-sub2"><span>Wire Glow</span><span class="d-check is-on"></span></div>
+				<div class="d-cat d-cat-2">Background</div>
+				<div class="d-row d-sub2"><span>Panel Background Material</span><span class="d-asset-pill">M_NC_NeonBackdrop</span></div>
+				<div class="d-row d-sub"><span>▸ Liquid Glass</span><span></span></div>
+				<div class="d-row d-sub"><span>▸ Command</span><span></span></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Steps ────────────────────────────────────────────────────────── -->
+	<section class="section section-band">
+		<div class="wrap">
+			<p class="kicker">Getting started</p>
+			<h2>Up and running in a minute.</h2>
+			<ol class="steps">
+				{
+					steps.map((s, i) => (
+						<li class="step">
+							<span class="step-num">{i + 1}</span>
+							<h3>{s.title}</h3>
+							<p>{s.text}</p>
+						</li>
+					))
+				}
+			</ol>
+			<a class="more" href={to('/getting-started/installation/')}>Installation guide <Icon name="right-arrow" size="1em" /></a>
+		</div>
+	</section>
+
+	<!-- ── Final call to action ─────────────────────────────────────────── -->
+	<section class="section">
+		<div class="wrap">
+			<div class="final">
+				<h2>Give your graphs a glow-up.</h2>
+				<p>Questions before you buy, or stuck after? The Discord is the fastest way to reach us.</p>
+				<div class="cta cta-center">
+					<a class="btn btn-primary" href={to('/getting-started/installation/')}>
+						Read the docs <Icon name="right-arrow" size="1.1em" />
+					</a>
+					<a class="btn btn-ghost" href={DISCORD} target="_blank" rel="noopener">
+						<Icon name="discord" size="1.1em" /> Join the Discord
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="foot">
+		<div class="wrap foot-inner">
+			<span><strong>NodeCraft</strong> by BiomeDrive</span>
+			<nav aria-label="Footer">
+				<a href={to('/getting-started/installation/')}>Docs</a>
+				<a href={to('/help/faq/')}>FAQ</a>
+				<a href={to('/help/support/')}>Support</a>
+				<a href={to('/changelog/')}>Changelog</a>
+				<a href={FAB} target="_blank" rel="noopener">Fab</a>
+				<a href={DISCORD} target="_blank" rel="noopener">Discord</a>
+			</nav>
+			<span class="copy">© 2026 BIOMEDRIVE (OPC) PRIVATE LIMITED</span>
+		</div>
+	</footer>
+</div>
+
+<script>
+	const video = document.querySelector<HTMLVideoElement>('.hero-video');
+	const toggle = document.querySelector<HTMLButtonElement>('[data-hero-toggle]');
+	if (video && toggle) {
+		const conn = (navigator as any).connection;
+		const wanted =
+			matchMedia('(min-width: 768px)').matches &&
+			!matchMedia('(prefers-reduced-motion: reduce)').matches &&
+			!(conn && conn.saveData);
+		if (wanted) {
+			let userPaused = false;
+			video.src = video.dataset.src!;
+			video.addEventListener('playing', () => video.classList.add('is-on'), { once: true });
+			const play = () => video.play().catch(() => {});
+			play();
+			toggle.hidden = false;
+			toggle.addEventListener('click', () => {
+				userPaused = !video.paused;
+				if (userPaused) video.pause();
+				else play();
+				toggle.setAttribute('aria-pressed', String(userPaused));
+				toggle.querySelector('.sr-only')!.textContent = userPaused ? 'Play background video' : 'Pause background video';
+			});
+			// Stop decoding while the hero is scrolled away; resume when it's back.
+			let onScreen = true;
+			new IntersectionObserver(([e]) => {
+				onScreen = e.isIntersecting;
+				if (userPaused) return;
+				if (onScreen) play();
+				else video.pause();
+			}).observe(video);
+			document.addEventListener('visibilitychange', () => {
+				if (!document.hidden && onScreen && !userPaused) play();
+			});
+		}
+	}
+</script>
+
+<style>
+	/* Starlight renders this page's title above custom content; the hero replaces it. */
+	:global(body:has(.nc-landing) :has(> h1#_top)) {
+		display: none;
+	}
+	:global(body:has(.nc-landing) .content-panel) {
+		padding: 0;
+		border: 0;
+	}
+	:global(body:has(.nc-landing) .sl-container) {
+		max-width: none;
+		margin: 0;
+	}
+	:global(body:has(.nc-landing) main) {
+		padding-bottom: 0;
+	}
+
+	.nc-landing {
+		--head-font: 'Space Grotesk Variable', 'Inter Variable', sans-serif;
+		overflow-x: clip;
+		color: var(--sl-color-gray-2);
+	}
+	.wrap {
+		width: min(1120px, 100% - 2.5rem);
+		margin-inline: auto;
+	}
+	.wrap-wide {
+		width: min(1200px, 100% - 2rem);
+	}
+	h1,
+	h2,
+	h3 {
+		font-family: var(--head-font);
+		color: var(--sl-color-white);
+		margin: 0;
+	}
+
+	/* ── Hero ───────────────────────────────────────────────────────────── */
+	/* Always dark (it sits on video), so colours are fixed, not theme tokens. */
+	.hero {
+		position: relative;
+		isolation: isolate;
+		display: flex;
+		flex-direction: column;
+		min-height: calc(100svh - var(--sl-nav-height, 3.5rem));
+		overflow: hidden;
+		background: #000;
+		color: #e7e9ee;
+	}
+	.hero-media,
+	.hero-shade {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+	}
+	.hero-poster,
+	.hero-video {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.hero-video {
+		opacity: 0;
+		transition: opacity 1.2s ease;
+	}
+	.hero-video.is-on {
+		opacity: 1;
+	}
+	.hero-shade {
+		background:
+			linear-gradient(90deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.1) 75%),
+			linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.12) 35%, rgba(0, 0, 0, 0.6) 78%, #000 100%);
+	}
+	.hero-copy {
+		position: relative;
+		margin-block: auto;
+		padding-block: clamp(4rem, 12vh, 8rem) clamp(3rem, 8vh, 5rem);
+	}
+	.hero-copy > * {
+		max-width: 680px;
+	}
+	.eyebrow {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 0 0 1.4rem;
+		font: 600 0.78rem/1.2 'JetBrains Mono Variable', ui-monospace, monospace;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #ffb466;
+	}
+	.sq {
+		width: 9px;
+		height: 9px;
+		flex: none;
+		background: var(--sl-color-accent);
+	}
+	.hero h1 {
+		color: #fff;
+		font-size: clamp(2.8rem, 6.6vw, 5.4rem);
+		line-height: 1;
+		letter-spacing: -0.035em;
+		font-weight: 700;
+		text-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
+	}
+	.hl {
+		color: #f59a3c;
+	}
+	.lede {
+		margin: 1.5rem 0 0;
+		font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+		line-height: 1.65;
+		color: #d3d6dd;
+		text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+	}
+	.hero .cta {
+		justify-content: flex-start;
+	}
+	.hero .btn-secondary {
+		background: #fff;
+		color: #000;
+	}
+	.hero .btn-ghost {
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.35);
+		background: rgba(0, 0, 0, 0.25);
+		backdrop-filter: blur(6px);
+	}
+	.hero .btn-ghost:hover {
+		border-color: rgba(255, 255, 255, 0.7);
+	}
+	.hero-strip {
+		position: relative;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(0, 0, 0, 0.55);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+	.strip-inner {
+		display: flex;
+		align-items: center;
+		gap: 1rem 2rem;
+		min-height: 3.5rem;
+		padding-block: 0.6rem;
+	}
+	.strip-facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 1.6rem;
+		margin: 0 auto 0 0;
+		padding: 0;
+		list-style: none;
+		font-size: 0.85rem;
+		color: #aeb3bc;
+	}
+	.strip-facts strong {
+		color: #fff;
+		font-weight: 600;
+	}
+	.strip-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		flex: none;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: #ffb466;
+		text-decoration: none;
+	}
+	.strip-link:hover {
+		text-decoration: underline;
+	}
+	.hero-toggle {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		background: rgba(0, 0, 0, 0.35);
+		color: #fff;
+		cursor: pointer;
+	}
+	.hero-toggle[hidden] {
+		display: none;
+	}
+	.hero-toggle svg {
+		width: 14px;
+		height: 14px;
+		fill: currentColor;
+	}
+	.hero-toggle .i-play,
+	.hero-toggle[aria-pressed='true'] .i-pause {
+		display: none;
+	}
+	.hero-toggle[aria-pressed='true'] .i-play {
+		display: block;
+	}
+	.hero-toggle:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+	@media (max-width: 720px) {
+		.strip-facts li:nth-child(n + 4) {
+			display: none;
+		}
+	}
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.8rem 1.35rem;
+		border-radius: 999px;
+		font-weight: 600;
+		font-size: 0.95rem;
+		text-decoration: none;
+		transition: transform 0.15s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+	}
+	.btn:hover {
+		transform: translateY(-1px);
+	}
+	.btn-primary {
+		background: var(--sl-color-accent);
+		color: #1a0e02;
+		box-shadow: 0 10px 30px -10px var(--sl-color-accent);
+	}
+	.btn-primary:hover {
+		box-shadow: 0 14px 34px -8px var(--sl-color-accent);
+	}
+	.btn-secondary {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+	}
+	.btn-ghost {
+		border: 1px solid var(--sl-color-gray-5);
+		color: var(--sl-color-white);
+	}
+	.btn-ghost:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	/* ── Sections ───────────────────────────────────────────────────────── */
+	.section {
+		padding: clamp(3.5rem, 8vw, 6rem) 0;
+	}
+	.section-band {
+		background:
+			linear-gradient(180deg, transparent, color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent) 20%, color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent) 80%, transparent);
+	}
+	.section-shots {
+		padding-top: clamp(1.5rem, 4vw, 3rem);
+	}
+	.shots {
+		margin-top: 2rem;
+	}
+	.kicker {
+		margin: 0 0 0.6rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sl-color-accent);
+	}
+	.section h2 {
+		font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+		line-height: 1.1;
+		letter-spacing: -0.025em;
+		font-weight: 700;
+		max-width: 20ch;
+	}
+	.section-lede {
+		max-width: 62ch;
+		margin: 1rem 0 0;
+		font-size: 1.05rem;
+		line-height: 1.7;
+	}
+	.more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 1.5rem;
+		font-weight: 600;
+		color: var(--sl-color-accent-high);
+		text-decoration: none;
+	}
+	.more:hover {
+		text-decoration: underline;
+	}
+
+	/* ── Feature grid ───────────────────────────────────────────────────── */
+	.features {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+		gap: 1rem;
+		margin-top: 2.5rem;
+	}
+	.feature {
+		position: relative;
+		display: block;
+		padding: 1.6rem;
+		border-radius: 16px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: color-mix(in srgb, var(--sl-color-gray-6) 40%, var(--sl-color-black));
+		text-decoration: none;
+		overflow: hidden;
+		transition: border-color 0.2s, transform 0.2s;
+	}
+	.feature::after {
+		content: '';
+		position: absolute;
+		inset: auto -30% -60% auto;
+		width: 220px;
+		height: 220px;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, color-mix(in srgb, var(--sl-color-accent) 22%, transparent), transparent);
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+	.feature:hover {
+		border-color: color-mix(in srgb, var(--sl-color-accent) 60%, var(--sl-color-gray-5));
+		transform: translateY(-3px);
+	}
+	.feature:hover::after {
+		opacity: 1;
+	}
+	.f-icon {
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 10px;
+		color: var(--sl-color-accent-high);
+		background: var(--sl-color-accent-low);
+		border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+	}
+	.feature h3 {
+		margin-top: 1.1rem;
+		font-size: 1.15rem;
+	}
+	.feature p {
+		margin: 0.5rem 0 0;
+		font-size: 0.93rem;
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+	}
+
+	/* ── Customise split ────────────────────────────────────────────────── */
+	.split {
+		display: grid;
+		grid-template-columns: 1.05fr 1fr;
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: center;
+	}
+	.ticks {
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.7rem;
+	}
+	.ticks li {
+		position: relative;
+		padding-left: 1.75rem;
+		line-height: 1.5;
+	}
+	.ticks li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.3em;
+		width: 1.05rem;
+		height: 1.05rem;
+		border-radius: 50%;
+		background:
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%231a0e02' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat,
+			var(--sl-color-accent);
+	}
+	.details {
+		border-radius: 12px;
+		border: 1px solid #2a2c30;
+		background: #151618;
+		color: #c9ccd1;
+		font: 12.5px/1 'Inter Variable', sans-serif;
+		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+		overflow: hidden;
+	}
+	.d-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 12px;
+		background: #0e0f11;
+		border-bottom: 1px solid #2a2c30;
+	}
+	.d-tab {
+		font-weight: 600;
+		color: #fff;
+	}
+	.d-asset {
+		color: #7c8088;
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 11px;
+	}
+	.d-search {
+		margin: 10px 12px;
+		padding: 7px 10px;
+		border-radius: 6px;
+		background: #0e0f11;
+		border: 1px solid #2a2c30;
+		color: #5c6068;
+	}
+	.d-cat {
+		padding: 8px 12px;
+		background: #1d1f22;
+		border-top: 1px solid #25272b;
+		font-weight: 600;
+		color: #e6e8eb;
+	}
+	.d-cat em {
+		font-style: normal;
+		font-weight: 400;
+		color: #7c8088;
+		margin-left: 8px;
+	}
+	.d-cat-2 {
+		padding-left: 40px;
+		background: #191a1d;
+		font-size: 11.5px;
+		color: #aeb2b8;
+	}
+	.d-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		min-height: 30px;
+		padding: 0 12px;
+		border-top: 1px solid #1f2124;
+	}
+	.d-sub {
+		padding-left: 24px;
+		font-weight: 600;
+	}
+	.d-sub2 {
+		padding-left: 54px;
+	}
+	.d-combo,
+	.d-num,
+	.d-asset-pill {
+		padding: 5px 9px;
+		border-radius: 5px;
+		background: #0e0f11;
+		border: 1px solid #33363b;
+		color: #e6e8eb;
+		white-space: nowrap;
+	}
+	.d-asset-pill {
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 11px;
+		color: var(--sl-color-accent-high, #ffd3a8);
+	}
+	.d-check {
+		width: 16px;
+		height: 16px;
+		border-radius: 3px;
+		border: 1px solid #44484e;
+		background: #0e0f11;
+	}
+	.d-check.is-on {
+		background:
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 90% no-repeat,
+			#f08a24;
+		border-color: #f08a24;
+	}
+
+	/* ── Steps ──────────────────────────────────────────────────────────── */
+	.steps {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.25rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		counter-reset: none;
+	}
+	.steps::before {
+		content: '';
+		position: absolute;
+		top: 1.35rem;
+		left: 8%;
+		right: 8%;
+		height: 2px;
+		background: repeating-linear-gradient(90deg, var(--sl-color-gray-5) 0 8px, transparent 8px 16px);
+	}
+	.step {
+		position: relative;
+		padding: 0 0.5rem;
+		text-align: center;
+	}
+	.step-num {
+		position: relative;
+		display: inline-grid;
+		place-items: center;
+		width: 2.7rem;
+		height: 2.7rem;
+		border-radius: 50%;
+		background: var(--sl-color-accent);
+		color: #1a0e02;
+		font: 700 1.1rem/1 var(--head-font);
+		box-shadow: 0 0 0 6px var(--sl-color-black);
+	}
+	.step h3 {
+		margin-top: 1rem;
+		font-size: 1.15rem;
+	}
+	.step p {
+		margin: 0.5rem auto 0;
+		max-width: 30ch;
+		font-size: 0.93rem;
+		line-height: 1.6;
+	}
+
+	/* ── Final CTA ──────────────────────────────────────────────────────── */
+	.final {
+		position: relative;
+		padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 4rem);
+		border-radius: 24px;
+		text-align: center;
+		border: 1px solid var(--sl-color-gray-5);
+		background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
+		backdrop-filter: blur(4px);
+		overflow: hidden;
+	}
+	.final h2 {
+		max-width: none;
+		font-size: clamp(1.9rem, 4.5vw, 3rem);
+	}
+	.final p {
+		margin: 1rem auto 0;
+		max-width: 52ch;
+		font-size: 1.05rem;
+	}
+	.cta-center {
+		justify-content: center;
+	}
+
+	/* ── Footer ─────────────────────────────────────────────────────────── */
+	.foot {
+		border-top: 1px solid var(--sl-color-gray-6);
+		padding: 2rem 0 2.5rem;
+		font-size: 0.875rem;
+		color: var(--sl-color-gray-3);
+	}
+	.foot-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.foot strong {
+		color: var(--sl-color-white);
+	}
+	.foot nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.25rem;
+	}
+	.foot a {
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.foot a:hover {
+		color: var(--sl-color-white);
+	}
+	.copy {
+		font-size: 0.8rem;
+	}
+
+	@media (max-width: 860px) {
+		.split {
+			grid-template-columns: 1fr;
+		}
+		.steps {
+			grid-template-columns: 1fr;
+		}
+		.steps::before {
+			display: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.btn,
+		.feature {
+			transition: none;
+		}
+	}
+</style>

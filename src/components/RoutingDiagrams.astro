@@ -1,0 +1,153 @@
+---
+// The three main routing styles, each drawn between the same two nodes with an
+// exec wire and a data wire, so the shapes compare directly.
+import { bezier, manhattan, subway } from '../lib/wires';
+
+// Two outputs on the left node, two inputs on the right node.
+const out1 = { x: 90, y: 44 };
+const out2 = { x: 90, y: 62 };
+const in1 = { x: 206, y: 108 };
+const in2 = { x: 206, y: 126 };
+
+const styles = [
+	{
+		name: 'Default',
+		tag: "Unreal's own",
+		text: "Unreal's native curved splines, for when you want the stock feel.",
+		wires: [bezier(out1, in1), bezier(out2, in2)],
+	},
+	{
+		name: 'Manhattan',
+		tag: 'Avoids nodes',
+		text: 'Straight lines with 90° turns. Wires sharing a path fan into parallel lanes.',
+		// Upper wire turns later so the two never cross, as ribbon spacing lays them out.
+		wires: [manhattan(out1, in1, 155), manhattan(out2, in2, 141)],
+	},
+	{
+		name: 'Subway',
+		tag: 'Avoids nodes',
+		text: '45° diagonals and straight runs, like a transit map. Tidy and easy to follow.',
+		wires: [subway(out1, in1), subway(out2, in2)],
+	},
+];
+---
+
+<div class="rd not-content">
+	{
+		styles.map((s) => (
+			<figure class="rd-card">
+				<svg viewBox="0 0 300 160" role="img" aria-label={`${s.name} routing example`}>
+					<g class="rd-node">
+						<rect x="14" y="16" width="84" height="60" rx="7" />
+						<path class="rd-bar" d="M21 16h70a7 7 0 0 1 7 7v7H14v-7a7 7 0 0 1 7-7z" />
+					</g>
+					<g class="rd-node">
+						<rect x="198" y="80" width="84" height="60" rx="7" />
+						<path class="rd-bar" d="M205 80h70a7 7 0 0 1 7 7v7h-84v-7a7 7 0 0 1 7-7z" />
+					</g>
+					<path class="rd-wire rd-exec" d={s.wires[0]} />
+					<path class="rd-wire rd-data" d={s.wires[1]} />
+					<path class="rd-pin-exec" d={`M${out1.x - 5} ${out1.y - 5}h5l5 5-5 5h-5z`} />
+					<path class="rd-pin-exec" d={`M${in1.x - 5} ${in1.y - 5}h5l5 5-5 5h-5z`} />
+					<circle class="rd-pin-data" cx={out2.x} cy={out2.y} r="4.5" />
+					<circle class="rd-pin-data" cx={in2.x} cy={in2.y} r="4.5" />
+				</svg>
+				<figcaption>
+					<span class="rd-head">
+						<strong>{s.name}</strong>
+						<span class="rd-tag">{s.tag}</span>
+					</span>
+					<span class="rd-text">{s.text}</span>
+				</figcaption>
+			</figure>
+		))
+	}
+</div>
+
+<style>
+	.rd {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+	.rd-card {
+		margin: 0;
+		padding: 1rem;
+		border-radius: 14px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-gray-6);
+		transition: border-color 0.2s, transform 0.2s;
+	}
+	.rd-card:hover {
+		border-color: var(--sl-color-gray-3);
+		transform: translateY(-2px);
+	}
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 10px;
+		background:
+			radial-gradient(circle, color-mix(in srgb, var(--sl-color-white) 10%, transparent) 1px, transparent 1.5px) 0 0 / 15px 15px,
+			var(--sl-color-black);
+	}
+	.rd-node rect {
+		fill: color-mix(in srgb, var(--sl-color-gray-6) 70%, var(--sl-color-black));
+		stroke: var(--sl-color-gray-4);
+		stroke-width: 1;
+	}
+	.rd-bar {
+		fill: var(--sl-color-gray-5);
+	}
+	.rd-wire {
+		fill: none;
+		stroke-width: 2.6;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.rd-exec {
+		stroke: var(--sl-color-white);
+	}
+	.rd-data,
+	.rd-pin-data {
+		stroke: #5fd35a;
+	}
+	.rd-pin-data {
+		fill: #5fd35a;
+		stroke-width: 0;
+	}
+	.rd-pin-exec {
+		fill: var(--sl-color-white);
+	}
+	figcaption {
+		display: grid;
+		gap: 0.35rem;
+		margin-top: 0.85rem;
+	}
+	.rd-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+	.rd-head strong {
+		font-family: var(--nc-head-font, sans-serif);
+		font-size: 1.05rem;
+		color: var(--sl-color-white);
+	}
+	.rd-tag {
+		padding: 0.15rem 0.5rem;
+		border-radius: 999px;
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: var(--sl-color-accent-high);
+		background: var(--sl-color-accent-low);
+	}
+	.rd-text {
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+	}
+</style>

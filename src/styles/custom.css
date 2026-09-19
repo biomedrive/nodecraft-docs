@@ -1,0 +1,132 @@
+/* ── Type ───────────────────────────────────────────────────────────── */
+:root {
+	--sl-font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--sl-font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', monospace;
+	--nc-head-font: 'Space Grotesk Variable', 'Inter Variable', sans-serif;
+}
+
+/* ── Colour: NodeCraft accent is the Command theme's signal orange ──── */
+:root {
+	--sl-color-accent-low: #3a2210;
+	--sl-color-accent: #f08a24;
+	--sl-color-accent-high: #ffd3a8;
+	--sl-color-black: #000000;
+	--sl-color-gray-6: #0e0e11;
+	--sl-color-gray-5: #232329;
+}
+:root[data-theme='light'] {
+	--sl-color-accent-low: #ffe2c7;
+	--sl-color-accent: #b85c08;
+	--sl-color-accent-high: #4a2604;
+	--sl-color-black: #ffffff;
+	--sl-color-gray-6: #f3f4f6;
+	--sl-color-gray-5: #e3e5e9;
+}
+
+/* ── Dark mode: black sky with a few distant stars ─────────────────────
+   Three sparse layers on different, non-matching tile sizes so the pattern
+   never visibly repeats. Drawn behind everything and fixed to the viewport. */
+:root[data-theme='dark'] body {
+	isolation: isolate;
+}
+:root[data-theme='dark'] body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background-image:
+		radial-gradient(1px 1px at 41px 63px, rgba(255, 255, 255, 0.55), transparent 70%),
+		radial-gradient(1px 1px at 227px 311px, rgba(255, 255, 255, 0.35), transparent 70%),
+		radial-gradient(1px 1px at 389px 142px, rgba(220, 230, 255, 0.45), transparent 70%),
+		radial-gradient(1px 1px at 118px 467px, rgba(255, 255, 255, 0.3), transparent 70%),
+		radial-gradient(1px 1px at 503px 409px, rgba(255, 255, 255, 0.4), transparent 70%),
+		radial-gradient(1px 1px at 612px 88px, rgba(255, 240, 220, 0.35), transparent 70%),
+		radial-gradient(1px 1px at 297px 703px, rgba(255, 255, 255, 0.3), transparent 70%),
+		radial-gradient(1px 1px at 811px 598px, rgba(210, 225, 255, 0.4), transparent 70%),
+		radial-gradient(1.5px 1.5px at 733px 251px, rgba(255, 255, 255, 0.7), transparent 70%),
+		radial-gradient(1.5px 1.5px at 1102px 877px, rgba(230, 238, 255, 0.6), transparent 70%),
+		radial-gradient(1.5px 1.5px at 268px 1046px, rgba(255, 245, 230, 0.55), transparent 70%);
+	background-size:
+		557px 557px,
+		557px 557px,
+		557px 557px,
+		557px 557px,
+		557px 557px,
+		887px 887px,
+		887px 887px,
+		887px 887px,
+		1231px 1231px,
+		1231px 1231px,
+		1231px 1231px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+header.header {
+	background: color-mix(in srgb, var(--sl-color-black) 78%, transparent);
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+	border-bottom-color: var(--sl-color-gray-6);
+}
+.site-title {
+	font-family: var(--nc-head-font);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+.site-title img {
+	border-radius: 6px;
+}
+
+/* ── Content pages ──────────────────────────────────────────────────── */
+.content-panel h1#_top {
+	font-family: var(--nc-head-font);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+}
+.sl-markdown-content :is(h2, h3, h4) {
+	font-family: var(--nc-head-font);
+	letter-spacing: -0.015em;
+}
+.sl-markdown-content h2 {
+	padding-bottom: 0.35rem;
+	border-bottom: 1px solid var(--sl-color-gray-6);
+}
+.sl-markdown-content a:not(.not-content a) {
+	text-decoration-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+	text-underline-offset: 0.2em;
+}
+.sl-markdown-content a:not(.not-content a):hover {
+	text-decoration-color: var(--sl-color-accent);
+}
+.sl-markdown-content table {
+	border-radius: 10px;
+	border: 1px solid var(--sl-color-gray-5);
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+}
+.sl-markdown-content :is(th, td) {
+	border-bottom: 1px solid var(--sl-color-gray-6);
+	border-inline: 0;
+}
+.sl-markdown-content tr:last-child td {
+	border-bottom: 0;
+}
+.sl-markdown-content th {
+	background: var(--sl-color-gray-6);
+	font-family: var(--nc-head-font);
+	font-weight: 600;
+}
+.sl-markdown-content :not(pre) > code {
+	border-radius: 5px;
+	padding: 0.1em 0.35em;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────── */
+.sidebar-content .large {
+	font-family: var(--nc-head-font);
+	letter-spacing: 0.01em;
+}
+.sidebar-content a[aria-current='page'] {
+	font-weight: 600;
+}

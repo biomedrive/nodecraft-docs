@@ -1,0 +1,307 @@
+---
+// Screenshot carousel: a transformed row of slides with arrow buttons, labelled
+// tabs, keyboard arrows and swipe/drag. Autoplay pauses on hover, focus and
+// drag, when off-screen, and for reduced-motion users.
+import { Image } from 'astro:assets';
+import overview from '../assets/showcase/01-nodecraft.webp';
+import neon from '../assets/showcase/02-neon.webp';
+import glass from '../assets/showcase/03-liquid-glass.webp';
+import command from '../assets/showcase/04-command.webp';
+import aetherial from '../assets/showcase/05-aetherial.webp';
+import atelier from '../assets/showcase/06-atelier.webp';
+import routing from '../assets/showcase/07-routing.png';
+
+const slides = [
+	{ img: overview, label: 'Overview', alt: 'The same Blueprint graph shown across all five NodeCraft themes' },
+	{ img: neon, label: 'Neon', alt: 'A Blueprint graph in the Neon theme, with glowing nodes over a fluid simulation backdrop' },
+	{ img: glass, label: 'Liquid Glass', alt: 'A Blueprint graph in the Liquid Glass theme, with glass nodes over a contour backdrop' },
+	{ img: command, label: 'Command', alt: 'A Blueprint graph in the Command theme, with graphite nodes on a drafting grid' },
+	{ img: aetherial, label: 'Aetherial', alt: 'A Blueprint graph in the Aetherial theme, with softly glowing teal nodes over a starfield' },
+	{ img: atelier, label: 'Atelier', alt: 'A Blueprint graph in the Atelier theme, with hand-drawn nodes on paper' },
+	{ img: routing, label: 'Routing', alt: 'Subway and Manhattan routing, each shown with and without ribbon spacing' },
+];
+---
+
+<div class="sc not-content" data-showcase>
+	<div class="sc-frame">
+		<div class="sc-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="NodeCraft screenshots">
+			{
+				slides.map((s, i) => (
+					<figure class="sc-slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}: ${s.label}`}>
+						<Image
+							src={s.img}
+							alt={s.alt}
+							widths={[640, 960, 1280, 1600]}
+							sizes="(max-width: 1240px) 100vw, 1200px"
+							loading="eager"
+							fetchpriority={i === 0 ? 'high' : 'auto'}
+						/>
+					</figure>
+				))
+			}
+		</div>
+		<button type="button" class="sc-nav sc-prev" data-prev aria-label="Previous screenshot">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+		</button>
+		<button type="button" class="sc-nav sc-next" data-next aria-label="Next screenshot">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+		</button>
+		<div class="sc-progress" aria-hidden="true"><i></i></div>
+	</div>
+	<div class="sc-tabs" role="tablist" aria-label="Choose a screenshot">
+		{
+			slides.map((s, i) => (
+				<button type="button" class="sc-tab" role="tab" data-go={i} aria-selected={i === 0 ? 'true' : 'false'}>
+					{s.label}
+				</button>
+			))
+		}
+	</div>
+</div>
+
+<script>
+	const DELAY = 5500;
+
+	document.querySelectorAll<HTMLElement>('[data-showcase]').forEach((root) => {
+		const track = root.querySelector<HTMLElement>('.sc-track')!;
+		const slides = [...root.querySelectorAll<HTMLElement>('.sc-slide')];
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-go]')];
+		const bar = root.querySelector<HTMLElement>('.sc-progress i')!;
+		const count = slides.length;
+		let index = 0;
+
+		// ── Autoplay state ─────────────────────────────────────────────────
+		const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let hovering = false;
+		let focused = false;
+		let visible = false;
+		let dragging = false;
+		let timer = 0;
+		const playing = () => !reduce && !hovering && !focused && !dragging && visible && !document.hidden;
+		const schedule = () => {
+			clearTimeout(timer);
+			bar.classList.remove('is-running');
+			void bar.offsetWidth; // restart the progress animation
+			if (playing()) {
+				bar.classList.add('is-running');
+				timer = window.setTimeout(() => go(index + 1), DELAY);
+			}
+		};
+
+		function go(i: number) {
+			index = (i + count) % count;
+			track.style.transform = `translateX(${-index * 100}%)`;
+			slides.forEach((s, n) => s.setAttribute('aria-hidden', String(n !== index)));
+			tabs.forEach((t, n) => t.setAttribute('aria-selected', String(n === index)));
+			schedule();
+		}
+
+		root.querySelector('[data-prev]')!.addEventListener('click', () => go(index - 1));
+		root.querySelector('[data-next]')!.addEventListener('click', () => go(index + 1));
+		tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+		track.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+			if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
+		});
+
+		// ── Swipe / drag ───────────────────────────────────────────────────
+		let startX = 0;
+		let startY = 0;
+		let dx = 0;
+		let horizontal: boolean | null = null;
+		track.addEventListener('pointerdown', (e) => {
+			if (e.button !== 0) return;
+			startX = e.clientX;
+			startY = e.clientY;
+			dx = 0;
+			horizontal = null;
+			dragging = true;
+			track.setPointerCapture(e.pointerId);
+			schedule();
+		});
+		track.addEventListener('pointermove', (e) => {
+			if (!dragging) return;
+			const mx = e.clientX - startX;
+			const my = e.clientY - startY;
+			if (horizontal === null && Math.hypot(mx, my) > 6) horizontal = Math.abs(mx) > Math.abs(my);
+			if (!horizontal) return;
+			dx = mx;
+			track.classList.add('is-dragging');
+			track.style.transform = `translateX(calc(${-index * 100}% + ${dx}px))`;
+		});
+		const release = () => {
+			if (!dragging) return;
+			dragging = false;
+			track.classList.remove('is-dragging');
+			const threshold = Math.min(80, track.clientWidth * 0.12);
+			go(dx < -threshold ? index + 1 : dx > threshold ? index - 1 : index);
+		};
+		track.addEventListener('pointerup', release);
+		track.addEventListener('pointercancel', release);
+
+		root.addEventListener('pointerenter', (e) => {
+			if (e.pointerType === 'mouse') (hovering = true), schedule();
+		});
+		root.addEventListener('pointerleave', () => ((hovering = false), schedule()));
+		root.addEventListener('focusin', () => ((focused = true), schedule()));
+		root.addEventListener('focusout', () => ((focused = false), schedule()));
+		document.addEventListener('visibilitychange', schedule);
+		new IntersectionObserver(([e]) => ((visible = e.isIntersecting), schedule()), { threshold: 0.4 }).observe(root);
+
+		go(0);
+	});
+</script>
+
+<style>
+	.sc {
+		position: relative;
+	}
+	.sc-frame {
+		position: relative;
+		border-radius: 16px;
+		overflow: hidden;
+		border: 1px solid var(--sl-color-gray-5);
+		background: #000;
+		box-shadow:
+			0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+			0 40px 90px -40px rgba(0, 0, 0, 0.9);
+	}
+	.sc-track {
+		display: flex;
+		transition: transform 0.6s cubic-bezier(0.22, 0.7, 0.2, 1);
+		will-change: transform;
+		touch-action: pan-y;
+		cursor: grab;
+		outline: none;
+	}
+	.sc-track.is-dragging {
+		transition: none;
+		cursor: grabbing;
+	}
+	.sc-track:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--sl-color-accent);
+	}
+	.sc-slide {
+		flex: 0 0 100%;
+		margin: 0;
+	}
+	.sc-slide img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		user-select: none;
+		-webkit-user-drag: none;
+	}
+	.sc-nav {
+		position: absolute;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		margin-top: -22px;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		background: rgba(0, 0, 0, 0.55);
+		color: #fff;
+		cursor: pointer;
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		opacity: 0;
+		transition: opacity 0.2s, background 0.2s, transform 0.2s;
+	}
+	.sc-nav svg {
+		width: 20px;
+		height: 20px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.4;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.sc-prev {
+		left: 14px;
+	}
+	.sc-next {
+		right: 14px;
+	}
+	.sc-frame:hover .sc-nav,
+	.sc-nav:focus-visible {
+		opacity: 1;
+	}
+	.sc-nav:hover {
+		background: rgba(0, 0, 0, 0.8);
+		transform: scale(1.06);
+	}
+	.sc-nav:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+	@media (hover: none) {
+		.sc-nav {
+			opacity: 1;
+			width: 38px;
+			height: 38px;
+			margin-top: -19px;
+		}
+	}
+	.sc-progress {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 3px;
+		background: rgba(255, 255, 255, 0.08);
+	}
+	.sc-progress i {
+		display: block;
+		width: 0;
+		height: 100%;
+		background: var(--sl-color-accent);
+	}
+	.sc-progress i.is-running {
+		animation: sc-fill 5.5s linear forwards;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sc-track {
+			transition: none;
+		}
+	}
+	@keyframes sc-fill {
+		to {
+			width: 100%;
+		}
+	}
+	.sc-tabs {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.4rem;
+		margin-top: 1.1rem;
+	}
+	.sc-tab {
+		padding: 0.45rem 0.9rem;
+		border-radius: 999px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		font: 500 0.85rem/1 var(--sl-font);
+		cursor: pointer;
+		transition: color 0.2s, border-color 0.2s, background 0.2s;
+	}
+	.sc-tab:hover {
+		color: var(--sl-color-white);
+		border-color: var(--sl-color-gray-3);
+	}
+	.sc-tab[aria-selected='true'] {
+		color: var(--sl-color-black);
+		background: var(--sl-color-white);
+		border-color: var(--sl-color-white);
+	}
+	.sc-tab:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+</style>

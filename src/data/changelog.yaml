@@ -1,0 +1,36 @@
+# NodeCraft changelog. The Changelog page is built from this file.
+#
+# To add a release, copy a block to the TOP of the file and edit it:
+#
+#   "1.1.0":                        <- the plugin version, in quotes
+#     date: 2026-11-02              <- release date (YYYY-MM-DD). Leave it out
+#                                      while the release is still upcoming.
+#     engines: UE 5.6 · 5.7 · 5.8   <- Unreal versions this release supports
+#     summary: One optional line.   <- optional
+#     changes:
+#       - type: new                 <- new | improved | fix | removed
+#         text: What changed, written for buyers.
+#
+# Releases are sorted by version number on the page, so order here doesn't
+# matter, but keeping the newest first makes the file easy to scan.
+
+"1.0.0":
+  engines: UE 5.6 · 5.7 · 5.8
+  summary: The first release of NodeCraft on Fab.
+  changes:
+    - type: new
+      text: "Five hand-built themes: Neon, Liquid Glass, Command, Aetherial and Atelier, plus UE_Default for Unreal's standard look."
+    - type: new
+      text: "Wire routing: Unreal's native splines, Manhattan (90°) and Subway (45° and 90°). Manhattan and Subway find their way around nodes."
+    - type: new
+      text: "Wire spacing fans wires that share a path into parallel lanes, so every wire stays visible."
+    - type: new
+      text: "Themed node shapes, pin icons, comment boxes and comment bubbles, in both Blueprint and Material graphs."
+    - type: new
+      text: "Animated backdrops, including a live fluid simulation behind Neon."
+    - type: new
+      text: "A NodeCraft toolbar dropdown in the Blueprint, Animation Blueprint, Widget Blueprint and Material editors. Blueprint and Material graphs keep separate themes."
+    - type: new
+      text: "Theme, routing and wire spacing choices are remembered per project, with no save prompts."
+    - type: new
+      text: "Every theme is editable data: colours, materials, pin icons, fonts and node shapes live in two theme assets."
