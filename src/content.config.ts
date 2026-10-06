@@ -15,6 +15,9 @@ export const collections = {
 			date: z.union([z.date(), z.string()]).optional(),
 			engines: z.string().optional(),
 			summary: z.string().optional(),
+			// Markdown shown in a highlighted box above the changes: for what a
+			// buyer must know or do (a critical fix and its steps).
+			notice: z.string().optional(),
 			changes: z.array(
 				z.object({
 					type: z.enum(['new', 'improved', 'fix', 'removed']),

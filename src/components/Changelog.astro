@@ -1,6 +1,7 @@
 ---
 // Renders src/data/changelog.yaml as release cards, newest version first.
 import { getCollection } from 'astro:content';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 
 const semver = (v: string) => v.split(/[.-]/).map((n) => parseInt(n, 10) || 0);
 const newestFirst = (a: string, b: string) => {
@@ -22,6 +23,14 @@ const formatDate = (d: Date | string) => {
 };
 
 const LABEL = { new: 'New', improved: 'Improved', fix: 'Fix', removed: 'Removed' } as const;
+
+// A release's notice is Markdown (paragraphs, bold, code blocks), rendered once
+// at build time.
+const markdown = await createMarkdownProcessor({ syntaxHighlight: false });
+const notices = new Map<string, string>();
+for (const r of releases) {
+	if (r.data.notice) notices.set(r.id, (await markdown.render(r.data.notice)).code);
+}
 ---
 
 <div class="cl not-content">
@@ -43,6 +52,7 @@ const LABEL = { new: 'New', improved: 'Improved', fix: 'Fix', removed: 'Removed'
 					{r.data.engines && <span class="cl-engines">{r.data.engines}</span>}
 				</header>
 				{r.data.summary && <p class="cl-summary">{r.data.summary}</p>}
+				{notices.has(r.id) && <div class="cl-notice" set:html={notices.get(r.id)} />}
 				<ul class="cl-list">
 					{r.data.changes.map((c) => (
 						<li>
@@ -59,6 +69,9 @@ const LABEL = { new: 'New', improved: 'Improved', fix: 'Fix', removed: 'Removed'
 <style>
 	.cl {
 		display: grid;
+		/* minmax(0, 1fr): a long line in a notice's code block scrolls inside
+		   the block instead of widening every card past the page. */
+		grid-template-columns: minmax(0, 1fr);
 		gap: 1.5rem;
 		margin-top: 2rem;
 	}
@@ -112,6 +125,41 @@ const LABEL = { new: 'New', improved: 'Improved', fix: 'Fix', removed: 'Removed'
 	.cl-summary {
 		margin: 0.75rem 0 0;
 		color: var(--sl-color-gray-2);
+	}
+	.cl-notice {
+		margin: 1.1rem 0 0;
+		padding: 1rem 1.15rem;
+		border-radius: 10px;
+		border: 1px solid color-mix(in srgb, #f5a623 55%, transparent);
+		border-left-width: 4px;
+		background: color-mix(in srgb, #f5a623 9%, transparent);
+		color: var(--sl-color-gray-2);
+		line-height: 1.6;
+	}
+	.cl-notice :global(p) {
+		margin: 0 0 0.7rem;
+	}
+	.cl-notice :global(p:last-child) {
+		margin-bottom: 0;
+	}
+	.cl-notice :global(strong) {
+		color: var(--sl-color-white);
+	}
+	.cl-notice :global(pre) {
+		margin: 0 0 0.7rem;
+		padding: 0.75rem 0.9rem;
+		overflow-x: auto;
+		border-radius: 8px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-black);
+		font: 0.8rem/1.5 var(--sl-font-mono);
+	}
+	.cl-notice :global(code) {
+		font-family: var(--sl-font-mono);
+	}
+	:root[data-theme='light'] .cl-notice {
+		border-color: color-mix(in srgb, #a86700 55%, transparent);
+		background: color-mix(in srgb, #f5a623 12%, transparent);
 	}
 	.cl-list {
 		display: grid;

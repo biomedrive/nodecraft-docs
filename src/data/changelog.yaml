@@ -7,12 +7,66 @@
 #                                      while the release is still upcoming.
 #     engines: UE 5.6 · 5.7 · 5.8   <- Unreal versions this release supports
 #     summary: One optional line.   <- optional
+#     notice: |                     <- optional Markdown box above the changes,
+#       **Something buyers must do.**  for a critical fix and its steps
 #     changes:
 #       - type: new                 <- new | improved | fix | removed
 #         text: What changed, written for buyers.
 #
 # Releases are sorted by version number on the page, so order here doesn't
 # matter, but keeping the newest first makes the file easy to scan.
+
+"1.1.0":
+  engines: UE 5.6 · 5.7 · 5.8
+  summary: "NodeCraft now ships seven hand-built themes: Neon, Liquid Glass, Command, Aetherial, Atelier, Midnight and Fairy Dust, plus UE_Default and a Custom theme you colour yourself. This update also fixes Blueprints saved with 1.0; please read the note below."
+  notice: |
+    **Critical fix: Blueprints saved with NodeCraft 1.0 could crash projects without NodeCraft.**
+
+    NodeCraft 1.0 stored a reference to one of its own classes inside every Blueprint graph it displayed. A Blueprint or level saved while 1.0 was installed then crashed the editor in any project without NodeCraft. This version no longer changes your Blueprints in any way.
+
+    **What you need to do:** assets saved with 1.0 keep that reference until they are saved again with this version. After updating, right-click your Content folder (or the folders holding your Blueprints and levels) and choose **Resave All**. Do this before you move those assets to another project or uninstall NodeCraft.
+
+    **If a project without NodeCraft already crashes on one of them:** add these lines to that project's Config/DefaultEngine.ini, open the project, save the affected Blueprints, then remove the lines:
+
+    ```ini
+    [CoreRedirects]
+    +ClassRedirects=(OldName="/Script/NodeCraft.NodeCraftGraphSchema",NewName="/Script/BlueprintGraph.EdGraphSchema_K2")
+    ```
+  changes:
+    - type: fix
+      text: "Blueprints saved with NodeCraft 1.0 could crash projects without NodeCraft. See the note above for what to do."
+    - type: fix
+      text: "The Default wire style now shows Unreal's own wires in Blueprint graphs."
+    - type: new
+      text: "New theme, Midnight: a flat black look built on Unreal's own node shapes, with fading grey titles."
+    - type: new
+      text: "New theme, Fairy Dust: pastel pink nodes on a polka-dot backdrop, with bubble, arrow and star pins."
+    - type: new
+      text: "Custom theme: colour Unreal's own node art yourself in Project Settings → Plugins → NodeCraft → Custom Theme. Set the title and title text colour for each node type, the body and body text colour, and the grid. Your colours are saved for you, not in the plugin, and Reset to Unreal puts them back. The NodeCraft toolbar menu opens it with Edit Custom Theme Colors."
+    - type: new
+      text: "Pins stay sharp at every zoom: a theme's pin icons can now be SVG files, drawn at their exact size on screen (Pin Style → SVG slots)."
+    - type: new
+      text: "Pin shadows: a soft shadow under the pin icons keeps light pins readable on light nodes (Pin Style → Shadow)."
+    - type: new
+      text: "Exec Pin Color tints only the exec pins, so data pins keep their type colours."
+    - type: new
+      text: "Themes can colour comment boxes (title, title text, body, border and bubble) and the inputs on nodes: checkboxes, dropdowns and value boxes."
+    - type: new
+      text: "Unreal's own look as theme options: Unreal Classic Nodes keeps Unreal's node art and recolours it, and any theme can use the Unreal body shape, a title fade and a soft node shadow."
+    - type: new
+      text: "Selected reroute nodes are highlighted in the theme's selection colour instead of Unreal's fixed orange."
+    - type: improved
+      text: "Manhattan and Subway wires use a new router. Routes depend only on the graph, so wires no longer shift or flicker while you zoom and pan."
+    - type: improved
+      text: "Smoother node edges and steadier thin borders at every zoom level."
+    - type: improved
+      text: "Simpler theme assets: node types follow the kinds Unreal itself colours differently (Default, Event, Pure, Flow Control, Switch, Cast and Variable)."
+    - type: fix
+      text: "Sketch routing no longer draws extra wires between pins."
+    - type: fix
+      text: "Pin labels keep Unreal's states: orphaned pins stay red, pins on disabled nodes fade, and inactive Material inputs dim."
+    - type: fix
+      text: "UE 5.7 and 5.8: renaming a comment right after creating it works, the Neon backdrop no longer rebuilds itself while the editor sits idle, and traced wires keep their width while debugging."
 
 "1.0.0":
   engines: UE 5.6 · 5.7 · 5.8
