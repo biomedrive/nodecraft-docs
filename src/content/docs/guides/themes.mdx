@@ -1,13 +1,13 @@
 ---
 title: Themes
-description: The five NodeCraft themes, plus UE_Default, and what each one changes.
+description: The seven NodeCraft themes, the Custom theme and UE_Default, and what each one changes.
 ---
 
 A NodeCraft theme restyles the whole graph as one set: node shapes and surfaces, pin icons, wires, comment boxes and the backdrop behind the graph.
 
 Pick a theme from the **Themes** section of the [NodeCraft dropdown](/getting-started/quick-start/). Blueprint and Material graphs each have their own active theme.
 
-![The same Blueprint graph shown in all five NodeCraft themes](../../../assets/showcase/01-nodecraft.webp)
+![The same Blueprint graph shown across the NodeCraft themes](../../../assets/showcase/01-nodecraft.webp)
 
 ## At a glance
 
@@ -18,6 +18,9 @@ Pick a theme from the **Themes** section of the [NodeCraft dropdown](/getting-st
 | **Command** | Precise and technical | Subway | Drafting grid |
 | **Aetherial** | Calm and atmospheric | Manhattan (Blueprints), Subway (materials) | Animated starfield |
 | **Atelier** | Hand-drawn | Sketch | Paper grain |
+| **Midnight** | Flat black, Unreal's shapes | Subway | Quiet grain |
+| **Fairy Dust** | Soft and playful | Subway | Polka dots |
+| **Custom** | Unreal's nodes, your colours | Default | Unreal's grid, recoloured |
 | **UE_Default** | Unreal's standard look | Default | Unreal's standard grid |
 
 ## Neon
@@ -66,6 +69,35 @@ Hand-drawn ink on paper. Every node border has its own organic pen wobble, and w
 - **Routing:** Sketch
 - **Best for:** tutorials, presentations and documentation screenshots
 
+## Midnight
+
+![The Midnight and Fairy Dust themes, side by side in a Blueprint graph](../../../assets/showcase/08-midnight-fairydust.webp)
+
+Flat black, built on **Unreal's own node shapes** rather than a custom silhouette, so nothing about the layout feels unfamiliar. Bodies are black, titles are dark grey and fade along their length, and borders are thin and grey. Event nodes keep a red title so they still stand out. The backdrop is a quiet grain with no animation.
+
+- **Routing:** Subway
+- **Best for:** long sessions, and anyone who wants Unreal with the glare turned down
+
+## Fairy Dust
+
+Pastel nodes on a polka-dot backdrop, with pin icons drawn as bubbles, arrows, hearts and stars. The lightest theme in the set, and the only pale one.
+
+- **Routing:** Subway
+- **Best for:** a soft, friendly look, and a change from dark editors
+
+## Custom
+
+![The Custom theme beside its colour settings in Project Settings](../../../assets/showcase/09-custom.png)
+
+Keeps Unreal's own node art and changes only the colours. Nothing new to learn: the nodes, gloss and shadows are the ones Unreal draws, recoloured to your palette.
+
+Set the colours in **Project Settings → Plugins → NodeCraft → Custom Theme**: a title and title text colour for each node type, the body and body text colour, and four grid colours. **Reset to Unreal** puts everything back.
+
+Your colours are saved for you, per project, not inside the plugin — so an update never overwrites them, and nothing changes for anyone else on your team unless they set their own.
+
+- **Routing:** Default (Unreal's splines)
+- **Best for:** keeping Unreal's look while making your graphs yours
+
 ## UE_Default
 
 Turns NodeCraft's styling off and shows Unreal's standard graph look, while keeping the plugin installed. Useful for comparing, or when you want the stock look for a while.
@@ -78,7 +110,11 @@ Themes only colour comments that still use the **default comment colour**. If yo
 
 ## Performance
 
-Most themes cost next to nothing. **Neon** runs a real fluid simulation on the GPU, and **Aetherial**'s backdrop animates continuously. If the editor feels slow on a lower-end machine, switch to **Command**, **Liquid Glass** or **Atelier**.
+NodeCraft is editor-only: it never compiles into your packaged game. While you drag nodes around, the plugin costs roughly **1 ms of CPU per frame**, and wire routing is **under 0.2 ms** of that, on every theme.
+
+What differs between themes is GPU work for the backdrop. Measured on a 40-node Blueprint at 1080p, **Neon**'s fluid simulation adds about 12.8 ms of render-thread time and **Fairy Dust**'s backdrop about 5.8 ms. **Midnight**, **Command**, **Atelier**, **Aetherial** and **Custom** add effectively none.
+
+If the editor feels slow on a lower-end machine, switch to one of those.
 
 ## Want to change a theme?
 

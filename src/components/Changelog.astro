@@ -26,6 +26,9 @@ const LABEL = { new: 'New', improved: 'Improved', fix: 'Fix', removed: 'Removed'
 
 // A release's notice is Markdown (paragraphs, bold, code blocks), rendered once
 // at build time.
+// public/ files need the site base prefixed; import.meta.env.BASE_URL carries it.
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+
 const markdown = await createMarkdownProcessor({ syntaxHighlight: false });
 const notices = new Map<string, string>();
 for (const r of releases) {
@@ -52,6 +55,16 @@ for (const r of releases) {
 					{r.data.engines && <span class="cl-engines">{r.data.engines}</span>}
 				</header>
 				{r.data.summary && <p class="cl-summary">{r.data.summary}</p>}
+				{r.data.images && (
+					<div class="cl-shots">
+						{r.data.images.map((img) => (
+							<figure>
+								<img src={base + img.src.replace(/^\//, '')} alt={img.alt} loading="lazy" decoding="async" />
+								{img.caption && <figcaption>{img.caption}</figcaption>}
+							</figure>
+						))}
+					</div>
+				)}
 				{notices.has(r.id) && <div class="cl-notice" set:html={notices.get(r.id)} />}
 				<ul class="cl-list">
 					{r.data.changes.map((c) => (
@@ -67,6 +80,28 @@ for (const r of releases) {
 </div>
 
 <style>
+	.cl-shots {
+		display: grid;
+		gap: 0.75rem;
+		grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+		margin: 0 0 1rem;
+	}
+	.cl-shots figure {
+		margin: 0;
+	}
+	.cl-shots img {
+		width: 100%;
+		height: auto;
+		border-radius: 0.5rem;
+		border: 1px solid var(--sl-color-gray-5);
+		display: block;
+	}
+	.cl-shots figcaption {
+		margin-top: 0.4rem;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+	}
+
 	.cl {
 		display: grid;
 		/* minmax(0, 1fr): a long line in a notice's code block scrolls inside

@@ -18,6 +18,11 @@ export const collections = {
 			// Markdown shown in a highlighted box above the changes: for what a
 			// buyer must know or do (a critical fix and its steps).
 			notice: z.string().optional(),
+			// Screenshots for the release, shown under the summary. Put the files
+			// in public/changelog/ and give src as /changelog/<file>.
+			images: z
+				.array(z.object({ src: z.string(), alt: z.string(), caption: z.string().optional() }))
+				.optional(),
 			changes: z.array(
 				z.object({
 					type: z.enum(['new', 'improved', 'fix', 'removed']),

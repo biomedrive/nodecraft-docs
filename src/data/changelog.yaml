@@ -17,8 +17,16 @@
 # matter, but keeping the newest first makes the file easy to scan.
 
 "1.1.0":
+  date: 2026-09-30
   engines: UE 5.6 · 5.7 · 5.8
   summary: "NodeCraft now ships seven hand-built themes: Neon, Liquid Glass, Command, Aetherial, Atelier, Midnight and Fairy Dust, plus UE_Default and a Custom theme you colour yourself. This update also fixes Blueprints saved with 1.0; please read the note below."
+  images:
+    - src: /changelog/1.1-new-themes.webp
+      alt: "The Midnight and Fairy Dust themes shown side by side in a Blueprint graph"
+      caption: "Two new themes: Midnight and Fairy Dust."
+    - src: /changelog/1.1-custom-theme.png
+      alt: "Project Settings showing NodeCraft's Custom Theme colour pickers next to a recoloured Blueprint graph"
+      caption: "The Custom theme recolours Unreal's own nodes from Project Settings."
   notice: |
     **Critical fix: Blueprints saved with NodeCraft 1.0 could crash projects without NodeCraft.**
 
@@ -69,6 +77,7 @@
       text: "UE 5.7 and 5.8: renaming a comment right after creating it works, the Neon backdrop no longer rebuilds itself while the editor sits idle, and traced wires keep their width while debugging."
 
 "1.0.0":
+  date: 2026-09-22
   engines: UE 5.6 · 5.7 · 5.8
   summary: The first release of NodeCraft on Fab.
   changes:
